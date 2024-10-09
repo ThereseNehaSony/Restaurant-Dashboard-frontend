@@ -1,16 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Bar } from 'react-chartjs-2'; // Importing Bar chart from Chart.js
 import FilterListIcon from '@mui/icons-material/FilterList';
-
+import Order from '../order/Order'
 
 const MainContent = () => {
-  // Sample data for the boxes
-  const boxesData = [
-    { title: 'Example', value: '26', description: 'Twenty-six orders' },
-    { title: 'Example', value: '15', description: 'Fifteen orders' },
-    { title: 'Example', value: '30', description: 'Thirty orders' },
-    { title: 'Example', value: '22', description: 'Twenty-two orders' },
-  ];
+  const [totalCount,setTotalCount] =  useState([])
+  const [boxesData, setBoxesData] = useState([]);
+  const [orders, setOrders] = useState([]);
+ 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get('http://localhost:8000/orders/get-count');
+  //       setTotalCount(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching box data:', error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // }, []);
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        // Fetch orders from the backend
+        const response = await axios.get(`http://localhost:8000/orders/get-orders`); // Update with your API endpoint
+        const fetchedOrders = response.data;
+
+        // Calculate metrics
+        const totalRevenue = fetchedOrders
+          .filter(order => order.status === 'Delivered') // Assuming order.status indicates the order's completion status
+          .reduce((acc, order) => acc + order.price, 0); // Sum totalAmount
+
+        const totalOrders = fetchedOrders.length;
+        const deliveredOrders = fetchedOrders.filter(order => order.status === 'Delivered').length;
+        const pendingOrders = fetchedOrders.filter(order => order.status === 'Pending').length;
+
+        // Prepare box data with different images
+        const newBoxesData = [
+          {  value: totalOrders.toString(), description: `Total Orders`, image: './1.png'},
+          {  value: pendingOrders.toString(), description: `Pending Orders` ,image:'./1.png' },
+          {  value: deliveredOrders.toString(), description: `Delivered Orders`,image:'./1.png' },
+          {  value: `₹${totalRevenue.toFixed(2)}`, description: 'Total revenue ', image: './1.png' },
+
+          // {  value: totalOrders.toString(), description: `${totalOrders} orders`, image: './images/orders.png' },
+          // {  value: completedOrders.toString(), description: `${completedOrders} completed orders`, image: './images/completed.png' },
+          // { value: pendingOrders.toString(), description: `${pendingOrders} pending orders`, image: './images/pending.png' },
+        ];
+
+        setOrders(fetchedOrders); // Store fetched orders if needed
+        setBoxesData(newBoxesData); // Update the state with box data
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   // Sample data for the charts
   const chartData1 = {
@@ -39,7 +88,7 @@ const MainContent = () => {
     <div style={{ padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px' }}>
       {/* Dashboard Title and Filter Box */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h5 style={{ margin: 0 }}>Dashboard</h5>
+        <h3 style={{ margin: 0 }}>Dashboard</h3>
         <div style={{ display: 'flex', alignItems: 'center', padding: '5px 10px', backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '4px' }}>
           <span style={{ marginRight: '8px' }}>Filter</span>
           <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
@@ -49,25 +98,26 @@ const MainContent = () => {
       </div>
 
       {/* Greeting Message */}
-      <p style={{ margin: '10px 0' }}>Hello Samantha, Welcome back to Sedap Admin</p>
+      <p style={{ margin: '10px 0', color:'GrayText' }}>Hello Samantha, Welcome back to Sedap Admin</p>
 
       {/* Container for Four Boxes */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginTop: '20px' }}>
-        {boxesData.map((box, index) => (
-          <div key={index} style={{ display: 'flex', alignItems: 'center', padding: '20px', backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '6px', height: '120px' }}>
-            <img 
-              src={'./logo.png'} // Use the image path you want
-              alt="Example"
-              style={{ width: '60px', height: '60px', marginRight: '20px' }} // Larger image styling
-            />
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-              <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{box.title}</span>
-              <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0' }}>{box.value}</p>
-              <p style={{ color: '#888', margin: '0' }}>{box.description}</p>
-            </div>
+      {boxesData.map((box, index) => (
+        <div key={index} style={{ display: 'flex', alignItems: 'center', padding: '20px', backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '6px', height: '120px' }}>
+          <img
+            src={box.image} // Use the image path from box data
+            alt={box.title}
+            style={{ width: '60px', height: '60px', marginRight: '20px',borderRadius: '50%' }} // Larger image styling
+          />
+          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+           
+            <p style={{ fontSize: '24px', fontWeight: 'bold', margin: '0' }}>{box.value}</p>
+            <p style={{ color: '#888', margin: '0' }}>{box.description}</p>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
+  
 
       {/* Container for Chart Boxes */}
       <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
@@ -83,6 +133,7 @@ const MainContent = () => {
           {/* <Bar data={chartData2} options={{ maintainAspectRatio: false }} height={200} /> */}
         </div>
       </div>
+      <Order />
     </div>
   );
 };

@@ -1,6 +1,8 @@
 .sidebar {
     /* Your existing styles */
-    width: 250px; /* Set a fixed width if necessary */
+    width: 250px;
+    height: auto;
+    background-color: white; /* Set a fixed width if necessary */
   }
   
   .sidebar img {

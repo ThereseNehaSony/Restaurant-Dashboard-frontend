@@ -2,9 +2,10 @@
 .navbar {
     background-color: #fff !important;
     color: #333;
-    box-shadow: none;
-    padding: 0 20px;
+    /* box-shadow: none;
+    padding: 0 20px; */
     margin-top: 10px;
+    margin-bottom: 10px;
   }
   
   /* Search bar container */

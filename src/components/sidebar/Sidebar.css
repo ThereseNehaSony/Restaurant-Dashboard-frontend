@@ -1,0 +1,26 @@
+.sidebar {
+    /* Your existing styles */
+    width: 250px; /* Set a fixed width if necessary */
+  }
+  
+  .sidebar img {
+    /* Styles for the logo */
+    width: 100%; /* Example: make the logo responsive */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 16px; /* Space below the logo */
+  }
+  
+  .sidebar .MuiListItem-root {
+    display: flex;
+    align-items: center; /* Center align items vertically */
+  }
+  
+  .sidebar .MuiListItemText-root {
+    margin-left: 16px; /* Adjust the gap here */
+  }
+  
+  
+  .sidebar .MuiListItem-root:hover {
+    background-color: rgba(0, 0, 0, 0.1); /* Light hover effect */
+  }
+  

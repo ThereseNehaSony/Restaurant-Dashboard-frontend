@@ -1,0 +1,17 @@
+.dashboard-content {
+    flex: 1;
+    padding: 20px;
+  }
+  .stat-card, .chart-card, .order-list {
+    padding: 20px;
+    text-align: center;
+  }
+  .order-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .order-table th, .order-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  

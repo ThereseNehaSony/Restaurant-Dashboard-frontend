@@ -1,23 +1,20 @@
-import logo from './logo.svg';
 import './App.css';
+import DashboardContent from './components/dashboard/Dashboard';
+import Sidebar from './components/sidebar/Sidebar';
+import Navbar from './components/navbar/Navbar';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="app-container">
+        {/* Sidebar stays fixed on the left */}
+        <Sidebar />
+        {/* Main content area: includes navbar and dashboard */}
+        <div className="main-content">
+          <Navbar />
+          <DashboardContent />
+        </div>
+      </div>
     </div>
   );
 }

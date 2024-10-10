@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <AppBar position="static" className="navbar">
       <Toolbar>
-        {/* Search Bar */}
+       
         <Box display="flex" alignItems="center" flexGrow={1}>
           <div className="search-bar">
             <InputBase
@@ -25,7 +25,7 @@ const Navbar = () => {
           </div>
         </Box>
 
-        {/* Icons with Badge and Outer Box */}
+       
         <Box display="flex" alignItems="center" className="icons-container">
           <Badge badgeContent={3} color="primary" className="icon-box">
             <IconButton>
@@ -50,7 +50,7 @@ const Navbar = () => {
           </Badge>
         </Box>
 
-        {/* Greeting */}
+        
         
         <Box ml={2}>
           <Typography variant="h6" className="greeting">

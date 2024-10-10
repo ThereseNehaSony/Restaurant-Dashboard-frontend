@@ -1,4 +1,4 @@
-/* Make navbar background white */
+
 .navbar {
     background-color: #fff !important;
     color: #333;
@@ -8,7 +8,7 @@
     margin-bottom: 10px;
   }
   
-  /* Search bar container */
+
   .search-bar {
     display: flex;
     align-items: center;
@@ -19,13 +19,13 @@
     position: relative;
   }
   
-  /* Search input */
+
   .search-input {
     flex-grow: 1;
     padding: 5px 10px;
   }
   
-  /* Search icon */
+
   .search-icon {
     color: #333;
     position: absolute;
@@ -33,13 +33,13 @@
     padding: 5px;
   }
   
-  /* Icon box around each icon */
+
   .icons-container {
     display: flex;
     align-items: center;
   }
   
-  /* Styling for each icon box */
+
   .icon-box {
     background-color: #f4f4f4;
     border-radius: 12px;
@@ -47,12 +47,12 @@
     margin-right: 10px;
   }
   
-  /* Remove default IconButton hover effect */
+
   .icon-box .MuiIconButton-root {
     padding: 5px;
   }
   
-  /* Greeting text */
+
   .greeting {
     color: #333;
   }

@@ -5,7 +5,8 @@ import BorderColorIcon from '@mui/icons-material/BorderColor';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import SearchIcon from '@mui/icons-material/Search';
-import './Order.css'; // Import your CSS for modal styling
+import './Order.css'; 
+import * as XLSX from 'xlsx';
 
 const Order = () => {
 
@@ -16,11 +17,23 @@ const Order = () => {
 
   const [orders, setOrders] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // State to track if we're editing
+  const [isEditing, setIsEditing] = useState(false); 
   const [selectedOrder, setSelectedOrder] = useState(null); 
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(5); 
+  const totalOrders = orders.length;
+  const totalPages = Math.ceil(totalOrders / ordersPerPage);
 
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+ 
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   
+
   const [newOrder, setNewOrder] = useState({
     createdAt: '',
     customerName: '',
@@ -31,11 +44,11 @@ const Order = () => {
     status: 'Pending',
   });
 
-  // Fetch orders from the backend when component mounts
+ 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:8000/orders/get-orders'); // Replace with your backend API URL
+        const response = await fetch('http://localhost:8000/orders/get-orders');
         if (response.ok) {
           const data = await response.json();
           setOrders(data);
@@ -49,6 +62,8 @@ const Order = () => {
 
     fetchOrders();
   }, []);
+
+
 
   const handleInputChange = (e) => {
     setNewOrder({ ...newOrder, [e.target.name]: e.target.value });
@@ -64,25 +79,25 @@ const Order = () => {
             body: JSON.stringify(newOrder),
         });
 
-        const responseData = await response.json(); // Capture the response data
+        const responseData = await response.json(); 
 
-        console.log('Response from server:', responseData); // Log the response data
+        console.log('Response from server:', responseData); 
 
         if (response.ok) {
-            // If we're editing, update the order in the state
+           
             if (isEditing) {
                 setOrders((prevOrders) =>
                     prevOrders.map((order) => (order._id === responseData.updatedOrder._id ? responseData.updatedOrder : order))
                 );
             } else {
-                // For adding a new order
+               
                 setOrders((prevOrders) => [...prevOrders, responseData.order]);
             }
 
-            // Close the modal and reset form fields
+           
             closeModalHandler();
         } else {
-            console.error('Failed to add/update order', responseData); // Log error response
+            console.error('Failed to add/update order', responseData); 
         }
     } catch (error) {
         console.error('Error while adding/updating order:', error);
@@ -144,16 +159,39 @@ const Order = () => {
     setLocationFilter('');
   };
   const filteredOrders = orders.filter(order => {
-    const orderDate = new Date(order.createdAt).toISOString().split('T')[0]; // Get only the date part in 'YYYY-MM-DD' format
+    const orderDate = new Date(order.createdAt).toISOString().split('T')[0]; 
   
     return (
-      (!idFilter || order.orderId.toString().includes(idFilter)) && // Filter by order ID
-      (!locationFilter || order.location.toLowerCase().includes(locationFilter.toLowerCase())) && // Filter by location
-      (!customerFilter || order.customerName.toLowerCase().includes(customerFilter.toLowerCase())) && // Filter by customer name
-      (!dateFilter || orderDate === dateFilter) // Filter by date (compare in 'YYYY-MM-DD' format)
+      (!idFilter || order.orderId.toString().includes(idFilter)) && 
+      (!locationFilter || order.location.toLowerCase().includes(locationFilter.toLowerCase())) && 
+      (!customerFilter || order.customerName.toLowerCase().includes(customerFilter.toLowerCase())) && 
+      (!dateFilter || orderDate === dateFilter) 
     );
- 
+   
   });
+  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+  const exportToExcel = () => {
+    
+    const formattedData = orders.map(order => ({
+      OrderID: order.orderId,
+      CustomerName: order.customerName,
+      Product: order.product,
+      Quantity: order.quantity,
+      Price:order.price,
+      Location:order.location,
+      Date: new Date(order.createdAt).toLocaleDateString(), 
+    }));
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+
+   
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Orders');
+
+
+    XLSX.writeFile(workbook, 'OrderList.xlsx');
+  };
+
   return (
     <div style={{ marginTop: '30px', backgroundColor: '#fff', padding: '20px', borderRadius: '6px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -168,7 +206,7 @@ const Order = () => {
       label="Order ID"
       variant="outlined"
       size="small"
-      style={{ marginRight: '10px', width: '150px' }} // Set width here
+      style={{ marginRight: '10px', width: '150px' }} 
       value={idFilter}
       onChange={(e) => setIdFilter(e.target.value)}
       slotProps={{ input: { endAdornment: <SearchIcon /> } }}
@@ -177,8 +215,8 @@ const Order = () => {
 
   variant="outlined"
   size="small"
-  type="date"  // Set the type to "date"
-  style={{ marginRight: '10px', width: '150px' }} // Set width here
+  type="date" 
+  style={{ marginRight: '10px', width: '150px' }} 
   value={dateFilter}
   onChange={(e) => setDateFilter(e.target.value)}
 
@@ -187,7 +225,7 @@ const Order = () => {
       label="Location"
       variant="outlined"
       size="small"
-      style={{ marginRight: '10px', width: '150px' }} // Set width here
+      style={{ marginRight: '10px', width: '150px' }} 
       value={locationFilter}
       onChange={(e) => setLocationFilter(e.target.value)}
       slotProps={{ input: { endAdornment: <SearchIcon /> } }}
@@ -196,6 +234,7 @@ const Order = () => {
   <Button variant="outlined" onClick={clearFilters}>
     Clear Filters
   </Button>
+ 
 </div>
       <TableContainer style={{ marginTop: '20px' }}>
         <Table>
@@ -209,11 +248,11 @@ const Order = () => {
               <TableCell>Quantity</TableCell>
               <TableCell>Location</TableCell>
               <TableCell>Status</TableCell>
-              
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-          {filteredOrders.map((order) => (
+          {currentOrders.map((order) => (
               <TableRow key={order?._id}>
                <TableCell>{order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</TableCell>
 
@@ -228,14 +267,14 @@ const Order = () => {
     
     padding: '5px 10px',
     borderRadius: '8px',
-    color: order?.status === 'Pending' ? 'orange' : // Text color for Pending
-          order?.status === 'Approved' ? 'green' : // Text color for Completed
-          order?.status === 'Delivered' ? 'red' : // Text color for Canceled
-          'black', // Default text color
+    color: order?.status === 'Pending' ? 'orange' : 
+          order?.status === 'Approved' ? 'green' :
+          order?.status === 'Delivered' ? 'red' : 
+          'black', 
     backgroundColor: order?.status === 'Pending' ? '#D3D3D3' :
                      order?.status === 'Approved' ? '#DCDCDC ' :
                      order?.status === 'Delivered' ? '#9E9E9E' :
-                     'gray', // Default background color
+                     'gray', 
   }}>
     {order?.status}
   </div>
@@ -253,8 +292,26 @@ const Order = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <div className="pagination">
+  <div className="page-info">
+    Page {currentPage} out of {totalPages}
+  </div>
+  <div className="page-numbers">
+    {[...Array(totalPages)].map((_, index) => (
+      <button
+        key={index + 1}
+        onClick={() => handlePageChange(index + 1)}
+        className={`page-number ${currentPage === index + 1 ? 'active' : ''}`}
+      >
+        {index + 1}
+      </button>
+    ))}
+    
+  </div>
+</div>
 
-      {/* Simple Modal */}
+   
+ 
       {openModal && (
         <div className="modal-overlay">
           <div className="modal-content">

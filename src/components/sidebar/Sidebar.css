@@ -1,28 +1,28 @@
 .sidebar {
-    /* Your existing styles */
+ 
     width: 250px;
     height: auto;
-    background-color: white; /* Set a fixed width if necessary */
+    background-color: white; 
   }
   
   .sidebar img {
-    /* Styles for the logo */
-    width: 100%; /* Example: make the logo responsive */
-    height: auto; /* Maintain aspect ratio */
-    margin-bottom: 16px; /* Space below the logo */
+    
+    width: 100%; 
+    height: auto; 
+    margin-bottom: 16px;
   }
   
   .sidebar .MuiListItem-root {
     display: flex;
-    align-items: center; /* Center align items vertically */
+    align-items: center; 
   }
   
   .sidebar .MuiListItemText-root {
-    margin-left: 16px; /* Adjust the gap here */
+    margin-left: 16px; 
   }
   
   
   .sidebar .MuiListItem-root:hover {
-    background-color: rgba(0, 0, 0, 0.1); /* Light hover effect */
+    background-color: rgba(0, 0, 0, 0.1); 
   }
   

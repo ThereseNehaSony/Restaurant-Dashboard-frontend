@@ -1,28 +1,3 @@
-// import React from 'react';
-// import './Sidebar.css';
-// import { List, ListItem, ListItemText } from '@mui/material';
-// import DashboardIcon from '@mui/icons-material/Dashboard';
-// const logo = '/logo.png'
-
-// const Sidebar = () => {
-//   const menuItems = ['Dashboard', 'Order List', 'Order Detail', 'Customer', 'Analytics', 'Reviews', 'Foods' ,'Food Detail', 'Customer Detail', 'Calender' , 'Chat', 'Wallet' ];
-
-//   return (
-//     <div className="sidebar">
-//      <img src={logo}/>
-//       <List>
-//         {menuItems.map((text, index) => (
-//           <ListItem button key={index}>
-//             <ListItemText primary={text} />
-//           </ListItem>
-//         ))}
-//       </List>
-//     </div>
-//   );
-// };
-
-// export default Sidebar;
-
 import React from 'react';
 import './Sidebar.css';
 import { List, ListItem, ListItemText } from '@mui/material';
